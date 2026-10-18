@@ -1,0 +1,35 @@
+# 基础配置
+app:
+  port: 9000
+  version: v0.1.0
+
+# 数据库配置
+database:
+  driver: mysql
+  source: root:123456@tcp(127.0.0.1:3306)/fibera?charset=utf8mb4&parseTime=True&loc=Local
+  sync: false    # 自动同步数据库 (首次运行建议开启)
+  max_idle_conns: 20    # 最大空闲连接数
+  max_open_conns: 100    # 最大打开连接数
+
+# redis配置
+redis:
+  enable: true    # 是否启用 redis
+  addr: localhost:6379
+  password:
+  db: 0
+
+# 日志配置
+log:
+  level: warn    # 日志级别 (debug、info、warn、error)
+  format: json    # 日志格式 (text、json)
+  output_method: file    # 日志输出方式 (console、file、default)
+  output_dir: logs    # 日志输出目录
+  max_size: 10    # 日志文件最大大小 (MB)
+  max_backups: 15    # 日志文件最大备份数
+  max_age: 30    # 日志文件最大保存天数
+
+# jwt配置
+jwt:
+  issuer: fibera    # 签发者
+  signing_method: HS256    # 签名算法 (HS256、HS384、HS512)
+  expiration_time: 24h    # 过期时间 (单位 h)
