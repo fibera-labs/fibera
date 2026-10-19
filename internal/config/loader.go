@@ -5,6 +5,7 @@ import (
 	"fibera"
 	"fmt"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/joho/godotenv"
@@ -42,9 +43,14 @@ func LoadConfig() (*Config, error) {
 		}
 
 		// 配置文件加载路径规则（优先级从高到低）：
-		// 1. 外部配置文件：通过明确指定的完整路径加载（默认项目同级目录下config.yaml）
-		// 2. 内部配置文件：在程序内部根据运行环境（如"config_"+env）动态拼接路径。
-		exConfigFilePath := "../config.yaml"
+		// 1. 外部配置文件：二进制文件同级目录下的 configs/config.yaml。
+		// 2. 内部配置文件：根据运行环境（如"config_"+env）动态拼接路径。
+		exePath, err := os.Executable()
+		if err != nil {
+			confErr = fmt.Errorf("failed to get the executable path: %w", err)
+			return
+		}
+		exConfigFilePath := filepath.Join(filepath.Dir(exePath), "configs", "config.yaml")
 		inConfigFilePath := "configs/config"
 
 		viper.SetConfigType("yaml")

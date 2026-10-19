@@ -51,7 +51,7 @@ go run ./cmd
 
 ## 配置说明
 
-程序通过 `.env` 中的 `APP_ENV` 选择配置，默认 `dev`，对应 `configs/config_{env}.yaml`。若项目同级目录存在 `../config.yaml`，将优先加载该外部配置。
+程序通过 `.env` 中的 `APP_ENV` 选择配置，默认 `dev`，对应 `configs/config_{env}.yaml`。若二进制文件同级目录存在 `configs/config.yaml`，将优先加载该外部配置。
 
 | 配置项 | 说明 |
 | --- | --- |
