@@ -40,8 +40,9 @@ var (
 // Jwt JWT中间件
 func Jwt() fiber.Handler {
 	excludedPaths := map[string]bool{
-		"/login":  true,
-		"/public": true,
+		"/login":   true,
+		"/public":  true,
+		"/metrics": true,
 	}
 
 	return func(c fiber.Ctx) error {

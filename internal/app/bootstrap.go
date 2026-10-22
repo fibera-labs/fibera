@@ -9,7 +9,9 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/adaptor"
 	"github.com/gofiber/fiber/v3/middleware/recover"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // Start 启动应用程序
@@ -61,10 +63,13 @@ func setupInfrastructure(conf *config.Config) (err error) {
 func registerMiddleware(app *fiber.App) {
 	app.Use(recover.New())
 	app.Use(customMiddleware.Logger())
+	app.Use(customMiddleware.Metrics())
 	app.Use(customMiddleware.Jwt())
 }
 
 // registerRoutes 注册路由
 func registerRoutes(app *fiber.App) {
+	// 暴露 Prometheus 指标采集端点
+	app.Get("/metrics", adaptor.HTTPHandler(promhttp.Handler()))
 	user.RegisterRoutes(app)
 }
