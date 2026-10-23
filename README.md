@@ -2,7 +2,7 @@
 
 ![Go](https://img.shields.io/badge/Go-1.26-00ADD8?logo=go&logoColor=white) ![Fiber](https://img.shields.io/badge/Fiber-v3-00ACD7?logo=gofiber&logoColor=white) ![GORM](https://img.shields.io/badge/GORM-MySQL-2D6E9E?logo=mysql&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-optional-DC382D?logo=redis&logoColor=white) ![Prometheus](https://img.shields.io/badge/Prometheus-metrics-E6522C?logo=prometheus&logoColor=white) ![Swagger](https://img.shields.io/badge/Swagger-2.0-85EA2D?logo=swagger&logoColor=black) ![Scalar](https://img.shields.io/badge/Scalar-API%20Reference-1A1A1A) ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-> 基于 Go 与 Fiber v3 的后端服务骨架：分层清晰、开箱可跑，适合作为 API 服务或后台管理系统的起步模板。
+> 基于 Go 与 Fiber v3 的后端服务脚手架：分层清晰、开箱可跑，适合作为 API 服务或后台管理系统的起步模板。
 
 Fibera 采用分层架构，依赖关系由外向内单向收敛：`cmd` 作为进程入口，仅触发启动流程；`internal/app` 承担装配职责，串联基础设施初始化、中间件与路由注册；`internal/biz` 按领域划分模块，各模块内聚 `handler`、`service`、`dto` 与路由注册；`internal/infrastructure` 封装数据库、日志、缓存等外部依赖，业务层不直接依赖其实现。
 
@@ -148,7 +148,7 @@ internal/biz/<module>/
 
 ```bash
 go install github.com/swaggo/swag/v2/cmd/swag@v2.0.0-rc5
-swag init -g cmd/main.go -o docs --parseInternal
+swag init -g cmd/main.go -o docs
 ```
 
 注解约定：
@@ -236,7 +236,7 @@ func RegisterRoutes(app *fiber.App) {
 
 1. 在 `handler` 方法上方补齐 swag 注解（`@Summary`、`@Param`、`@Success`、`@Router` 等）。
 2. 需要鉴权时追加 `@Security BearerAuth`。
-3. 执行 `swag init -g cmd/main.go -o docs --parseInternal` 更新文档。
+3. 执行 `swag init -g cmd/main.go -o docs` 更新文档。
 
 ## 参与贡献
 

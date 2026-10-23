@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "基于 Go 与 Fiber v3 的后端服务骨架，提供登录认证与系统用户管理接口。",
+        "description": "基于 Go 与 Fiber v3 的后端服务脚手架。",
         "title": "Fibera API",
         "contact": {},
         "version": "v0.1.0"

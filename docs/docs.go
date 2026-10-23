@@ -644,7 +644,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Fibera API",
-	Description:      "基于 Go 与 Fiber v3 的后端服务骨架，提供登录认证与系统用户管理接口。",
+	Description:      "基于 Go 与 Fiber v3 的后端服务脚手架。",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
