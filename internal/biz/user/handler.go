@@ -21,6 +21,16 @@ func NewHandler(service *Service) *Handler {
 }
 
 // GetUserList 获取用户列表
+//
+//	@Summary		获取用户列表
+//	@Description	查询全部系统用户，返回结果不包含密码等敏感字段
+//	@Tags			系统用户
+//	@Produce		json
+//	@Success		200	{object}	common.Response{data=[]user.UserResponse}
+//	@Failure		401	{object}	common.Response	"未认证或 token 无效"
+//	@Failure		500	{object}	common.Response	"服务内部错误"
+//	@Security		BearerAuth
+//	@Router			/api/users [get]
 func (h *Handler) GetUserList(c fiber.Ctx) error {
 	users, err := h.service.GetUserList()
 	if err != nil {
@@ -30,6 +40,19 @@ func (h *Handler) GetUserList(c fiber.Ctx) error {
 }
 
 // GetUserByID 获取用户详情
+//
+//	@Summary		获取用户详情
+//	@Description	按主键查询单个系统用户，返回结果不包含密码等敏感字段
+//	@Tags			系统用户
+//	@Produce		json
+//	@Param			id	path		int	true	"用户主键"
+//	@Success		200	{object}	common.Response{data=user.UserResponse}
+//	@Failure		400	{object}	common.Response	"无效的用户ID"
+//	@Failure		401	{object}	common.Response	"未认证或 token 无效"
+//	@Failure		404	{object}	common.Response	"用户不存在"
+//	@Failure		500	{object}	common.Response	"服务内部错误"
+//	@Security		BearerAuth
+//	@Router			/api/users/{id} [get]
 func (h *Handler) GetUserByID(c fiber.Ctx) error {
 	id, err := parseUserID(c)
 	if err != nil {
@@ -47,6 +70,19 @@ func (h *Handler) GetUserByID(c fiber.Ctx) error {
 }
 
 // CreateUser 创建用户
+//
+//	@Summary		创建用户
+//	@Description	创建系统用户，密码在落库前进行加密处理
+//	@Tags			系统用户
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		CreateUserRequest	true	"创建用户请求参数"
+//	@Success		200		{object}	common.Response{data=user.UserResponse}
+//	@Failure		400		{object}	common.Response	"请求参数有误"
+//	@Failure		401		{object}	common.Response	"未认证或 token 无效"
+//	@Failure		500		{object}	common.Response	"服务内部错误"
+//	@Security		BearerAuth
+//	@Router			/api/users [post]
 func (h *Handler) CreateUser(c fiber.Ctx) error {
 	var req CreateUserRequest
 	if err := c.Bind().Body(&req); err != nil {
@@ -61,6 +97,20 @@ func (h *Handler) CreateUser(c fiber.Ctx) error {
 }
 
 // UpdateUser 更新用户
+//
+//	@Summary		更新用户
+//	@Description	按主键更新系统用户信息
+//	@Tags			系统用户
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int					true	"用户主键"
+//	@Param			request	body		UpdateUserRequest	true	"更新用户请求参数"
+//	@Success		200		{object}	common.Response{data=user.UserResponse}
+//	@Failure		400		{object}	common.Response	"无效的用户ID或请求参数有误"
+//	@Failure		401		{object}	common.Response	"未认证或 token 无效"
+//	@Failure		500		{object}	common.Response	"服务内部错误"
+//	@Security		BearerAuth
+//	@Router			/api/users/{id} [put]
 func (h *Handler) UpdateUser(c fiber.Ctx) error {
 	id, err := parseUserID(c)
 	if err != nil {
@@ -80,6 +130,18 @@ func (h *Handler) UpdateUser(c fiber.Ctx) error {
 }
 
 // DeleteUser 删除用户
+//
+//	@Summary		删除用户
+//	@Description	按主键删除系统用户
+//	@Tags			系统用户
+//	@Produce		json
+//	@Param			id	path		int	true	"用户主键"
+//	@Success		200	{object}	common.Response	"删除成功"
+//	@Failure		400	{object}	common.Response	"无效的用户ID"
+//	@Failure		401	{object}	common.Response	"未认证或 token 无效"
+//	@Failure		500	{object}	common.Response	"服务内部错误"
+//	@Security		BearerAuth
+//	@Router			/api/users/{id} [delete]
 func (h *Handler) DeleteUser(c fiber.Ctx) error {
 	id, err := parseUserID(c)
 	if err != nil {

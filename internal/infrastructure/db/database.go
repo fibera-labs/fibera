@@ -1,8 +1,8 @@
 package db
 
 import (
-	"sync"
 	"fibera/internal/config"
+	"sync"
 
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"

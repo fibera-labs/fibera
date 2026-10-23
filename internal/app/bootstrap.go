@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fibera/internal/apidoc"
 	"fibera/internal/biz/auth"
 	"fibera/internal/biz/user"
 	"fibera/internal/config"
@@ -31,7 +32,7 @@ func Start() {
 
 	app := fiber.New()
 	registerMiddleware(app)
-	registerRoutes(app)
+	registerRoutes(app, conf)
 
 	err = app.Listen(":" + conf.App.Port)
 	if err != nil {
@@ -69,9 +70,10 @@ func registerMiddleware(app *fiber.App) {
 }
 
 // registerRoutes 注册路由
-func registerRoutes(app *fiber.App) {
+func registerRoutes(app *fiber.App, conf *config.Config) {
 	// 暴露 Prometheus 指标采集端点
 	app.Get("/metrics", adaptor.HTTPHandler(promhttp.Handler()))
+	apidoc.RegisterRoutes(app, conf)
 	auth.RegisterRoutes(app)
 	user.RegisterRoutes(app)
 }

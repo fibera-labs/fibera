@@ -28,9 +28,11 @@ func SetupLogger(conf *config.Config) error {
 	}
 
 	outputDir := "../" + conf.Log.OutputDir
-	err := os.MkdirAll(outputDir, 0755)
-	if err != nil {
-		return fmt.Errorf("failed to create log directory: %v", err)
+	// 仅文件输出需要日志目录，控制台输出不落盘
+	if conf.Log.OutputMethod != "console" {
+		if err := os.MkdirAll(outputDir, 0755); err != nil {
+			return fmt.Errorf("failed to create log directory: %v", err)
+		}
 	}
 
 	fileWriter := &lumberjack.Logger{

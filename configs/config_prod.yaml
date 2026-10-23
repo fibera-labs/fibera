@@ -33,3 +33,16 @@ jwt:
   issuer: fibera    # 签发者
   signing_method: HS256    # 签名算法 (HS256、HS384、HS512)
   expiration_time: 24h    # 过期时间 (单位 h)
+
+# API文档配置
+docs:
+  enable: false    # 是否启用 API 文档，生产环境按需开启
+  path: /docs    # 文档访问路径
+  base_path: /    # 反向代理前缀，直连访问保持 / 即可
+  title: Fibera API 文档    # 文档页面标题
+  theme: none    # Scalar 主题 (none、default、alternate、moon、purple、solarized、bluePlanet、saturn、kepler、mars、deepSpace、laserwave)
+  custom_style: ""    # 自定义样式，填写 Scalar 的 CSS 变量
+  proxy_url: ""    # 代理地址，用于规避跨域请求限制
+  cache_age: 60    # 文档页面缓存时间 (单位 s)
+  fallback_cache_age: 86400    # 内置 Scalar 脚本缓存时间 (单位 s)
+  force_offline: true    # 是否强制加载内置脚本，内网离线部署保持 true

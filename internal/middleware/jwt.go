@@ -41,12 +41,14 @@ var (
 func Jwt() fiber.Handler {
 	excludedPaths := map[string]bool{
 		"/api/auth/login": true,
-		"/metrics": true,
+		"/metrics":        true,
 	}
+	// API 文档（Scalar 页面与规范文件）需支持匿名访问
+	docsPath := excludedDocsPath()
 
 	return func(c fiber.Ctx) error {
 		// 检查排除路由
-		if excludedPaths[c.Path()] {
+		if excludedPaths[c.Path()] || isDocsPath(c.Path(), docsPath) {
 			return c.Next()
 		}
 
@@ -166,6 +168,23 @@ func handleJWTError(c fiber.Ctx, err error) error {
 	default:
 		return common.Error(c, fiber.StatusUnauthorized, "认证失败")
 	}
+}
+
+// excludedDocsPath 返回需匿名访问的文档路径，未启用文档时返回空串
+func excludedDocsPath() string {
+	conf, err := config.LoadConfig()
+	if err != nil || !conf.Docs.Enable {
+		return ""
+	}
+	return conf.Docs.Normalize().Path
+}
+
+// isDocsPath 判断请求路径是否属于文档路径（含其子路径）
+func isDocsPath(path, docsPath string) bool {
+	if docsPath == "" {
+		return false
+	}
+	return path == docsPath || strings.HasPrefix(path, docsPath+"/")
 }
 
 // parseBearerToken 解析Bearer token

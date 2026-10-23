@@ -2,8 +2,8 @@ package redis
 
 import (
 	"context"
-	"sync"
 	"fibera/internal/config"
+	"sync"
 
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
