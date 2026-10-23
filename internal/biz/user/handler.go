@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"fibera/internal/common"
-	"fibera/internal/model"
 
 	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"
@@ -49,12 +48,13 @@ func (h *Handler) GetUserByID(c fiber.Ctx) error {
 
 // CreateUser 创建用户
 func (h *Handler) CreateUser(c fiber.Ctx) error {
-	var user model.SysUser
-	if err := c.Bind().Body(&user); err != nil {
+	var req CreateUserRequest
+	if err := c.Bind().Body(&req); err != nil {
 		return common.Error(c, fiber.StatusBadRequest, "请求参数有误")
 	}
 
-	if err := h.service.CreateUser(&user); err != nil {
+	user, err := h.service.CreateUser(&req)
+	if err != nil {
 		return common.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 	return common.Success(c, user)
@@ -67,13 +67,13 @@ func (h *Handler) UpdateUser(c fiber.Ctx) error {
 		return common.Error(c, fiber.StatusBadRequest, "无效的用户ID")
 	}
 
-	var user model.SysUser
-	if err := c.Bind().Body(&user); err != nil {
+	var req UpdateUserRequest
+	if err := c.Bind().Body(&req); err != nil {
 		return common.Error(c, fiber.StatusBadRequest, "请求参数有误")
 	}
-	user.ID = id
 
-	if err := h.service.UpdateUser(&user); err != nil {
+	user, err := h.service.UpdateUser(id, &req)
+	if err != nil {
 		return common.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 	return common.Success(c, user)

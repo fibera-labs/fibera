@@ -27,7 +27,7 @@ type JWTConfig struct {
 }
 
 type CustomClaims struct {
-	UserID   int    `json:"userID"`
+	UserID   int64  `json:"userID"`
 	UserName string `json:"userName"`
 	jwt.RegisteredClaims
 }
@@ -40,8 +40,7 @@ var (
 // Jwt JWT中间件
 func Jwt() fiber.Handler {
 	excludedPaths := map[string]bool{
-		"/login":   true,
-		"/public":  true,
+		"/api/auth/login": true,
 		"/metrics": true,
 	}
 
@@ -73,7 +72,7 @@ func Jwt() fiber.Handler {
 }
 
 // GenerateToken 生成token
-func GenerateToken(userID int, userName string) (string, error) {
+func GenerateToken(userID int64, userName string) (string, error) {
 	conf, _ := config.LoadConfig()
 	jwtConf, err := loadJwtConfig(conf)
 	if err != nil {

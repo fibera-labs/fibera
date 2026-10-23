@@ -3,6 +3,7 @@ package user
 import (
 	"fibera/internal/infrastructure/db"
 	"fibera/internal/model"
+	"fibera/utils/security"
 
 	"gorm.io/gorm"
 )
@@ -19,29 +20,64 @@ func NewService() *Service {
 }
 
 // GetUserList 查询用户列表
-func (s *Service) GetUserList() ([]*model.SysUser, error) {
+func (s *Service) GetUserList() ([]*UserResponse, error) {
 	var users []*model.SysUser
-	err := s.db.Find(&users).Error
-	return users, err
+	if err := s.db.Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	responses := make([]*UserResponse, 0, len(users))
+	for _, user := range users {
+		responses = append(responses, newUserResponse(user))
+	}
+	return responses, nil
 }
 
 // GetUserByID 根据主键查询用户
-func (s *Service) GetUserByID(id uint) (*model.SysUser, error) {
+func (s *Service) GetUserByID(id uint) (*UserResponse, error) {
 	var user model.SysUser
 	if err := s.db.First(&user, id).Error; err != nil {
 		return nil, err
 	}
-	return &user, nil
+	return newUserResponse(&user), nil
 }
 
-// CreateUser 创建用户
-func (s *Service) CreateUser(user *model.SysUser) error {
-	return s.db.Create(user).Error
+// CreateUser 创建用户，明文密码统一使用 bcrypt 加密后入库
+func (s *Service) CreateUser(req *CreateUserRequest) (*UserResponse, error) {
+	user := req.toModel()
+	if user.Password != "" {
+		hashed, err := security.HashPassword(user.Password)
+		if err != nil {
+			return nil, err
+		}
+		user.Password = hashed
+	}
+
+	if err := s.db.Create(user).Error; err != nil {
+		return nil, err
+	}
+	return newUserResponse(user), nil
 }
 
-// UpdateUser 根据主键更新用户
-func (s *Service) UpdateUser(user *model.SysUser) error {
-	return s.db.Save(user).Error
+// UpdateUser 根据主键更新用户，未传密码时保留原密码
+func (s *Service) UpdateUser(id uint, req *UpdateUserRequest) (*UserResponse, error) {
+	user := req.toModel(id)
+
+	query := s.db
+	if user.Password != "" {
+		hashed, err := security.HashPassword(user.Password)
+		if err != nil {
+			return nil, err
+		}
+		user.Password = hashed
+	} else {
+		query = query.Omit("password")
+	}
+
+	if err := query.Save(user).Error; err != nil {
+		return nil, err
+	}
+	return newUserResponse(user), nil
 }
 
 // DeleteUser 根据主键删除用户
